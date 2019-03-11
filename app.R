@@ -71,16 +71,17 @@ shinyApp(
                         selectInput("distance", label="Below", 
                                     choices = c(2*1:4, "Above 10"), selected = "8"),
                         h4("Floor_plan"),
-                        selectInput("var", "Below", choices = plan_list, 
+                        selectInput("var",label = NULL, choices = plan_list, 
                                     selected = "1 Bedrooms, 1 Bathroom"),
-                        h4("Uncertianty"),
-                        sliderInput("uncertainty",label=NULL, min=0.1, max=0.75, 
-                                    value=0.25, step=0.1)
+                        h4("Estimate Preference"),
+                        #sliderInput("uncertainty",label=NULL, min=0.3, max=0.7,value=0.5, step=0.1)
+                        selectInput("uncertainty",label=NULL, 
+                                    choices = c("Pessimistic"=0.3,"Neutral"=0.5,"Optimistic"=0.7))
                         
           ),
           
           tags$div(id="cite",
-                   'Data compiled for ', tags$em('Coming Apart: Copyright © 2017 Apartmentratings.com')
+                   'Data compiled for ', tags$em('Coming Apart: Copyright ?? 2017 Apartmentratings.com')
           )
       )
     ),
@@ -126,10 +127,11 @@ shinyApp(
         
         df = get(load(paste0("classprb",input$var,".Rdata")))
         rm(classprb)
-        samps = sapply(df,function(x) apply(x,2,function(i) quantile(i,input$uncertainty)))
+        samps = sapply(df,function(x) apply(x,2,function(i) quantile(i,as.numeric(input$uncertainty))))
         weighted_mean = apply(samps,1,function(x) weighted.mean(0:5,x))
         weighted_mean = data.frame(name = names(weighted_mean),val = weighted_mean,plan = floor_plan)
         return_df = merge(weighted_mean,df.complete,by = c("name","plan"))
+        
         return_df = return_df%>%
           filter(!duplicated(name))%>%
           filter(rent< as.numeric(price))%>%
@@ -205,8 +207,8 @@ shinyApp(
     })
     
   })
-}
-)
+#}
+#)
 #  observe({
 #    if (is.null(input$goto))
 #      return()
