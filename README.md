@@ -42,13 +42,13 @@ We used several group and individual measurements as predictors to model ratings
 
 It produces posterior distribution of apartment ratings ranging from 0-5 stars. Compared to optimization based approach (most machine learning algorithms) that only yields point estimate of ratings (rather than distribution as in our case), this approach has one crucial advantage: it takes into account the uncertainty in these ratings which could significantly differ among apartments due to number of reviews etc.
 
-To clarify what I mean by including uncertainty, let's simplify the problem and consider the case where we are modeling whether the apartment is considered good/bad (binary outcome) using upvote/downwote as a proxy outcome for that (so not even regression). Suppose we are only interested ranking 2 apartments, and somehow managed to obtain the posterior distribution of these apartments being upvoted as $$ p_1 \in [0,1] , p_2 \in[0,1] $$ and these distributions are as follows:
+To clarify what I mean by including uncertainty, let's simplify the problem and consider the case where we are modeling whether the apartment is considered good/bad (binary outcome) using upvote/downwote as a proxy outcome for that (so not even regression). Suppose we are only interested ranking 2 apartments (apartment A,B), and somehow managed to obtain the posterior distribution of these apartments being upvoted as follows:
 	
-	![](Fig1.png)
+![](Fig1.png)
 	
 As we can see, it is not immediatly apparent which apartments are better by looking at the distributions. In order to rank them, easiest approach is to obtain a representative value from these 2 distributions by picking one point of the distribution. The most strainghtforward choice of such a point is mean, however we could also be conservative and pick the 1-st quantile if we want to lower the chance of overestimating the upvote for some reason. Resulting point estimates for distributions of both apartments are shown below:
 	
-	![](Fig2.png)
+![](Fig2.png)
 	
 As we can see, the resulting rankings are completely opposite depending on our choice of representative values used for evaluation. Whether we prefer one ranking from another depends on your decision rule. If you simply care about the efficiency of the ranking, picking some centrality measure such as mean, median mode etc would be better. However, if you are particularly concerned about the over or under-estimate, evaluating at the center doesn't make any sense, and would rather care about the tails of the distribution.
 
